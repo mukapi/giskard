@@ -1,0 +1,39 @@
+/**
+ * Navigation Dropdown Animation
+ * 
+ * Animation en deux parties :
+ * 1. Le conteneur dropdown : expansion de hauteur (0 → auto) via CSS Grid
+ * 2. Les liens internes : slide from bottom + fade in (tous en même temps)
+ */
+
+/* État par défaut (fermé) */
+.nav_dropdown_content {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Wrapper interne nécessaire pour le CSS Grid trick */
+.nav_dropdown_content > * {
+  min-height: 0;
+}
+
+/* Animation des liens à l'intérieur - État fermé */
+.nav_dropdown_content .nav_dropdown_link {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+}
+
+/* État ouvert - ajouté automatiquement par Webflow */
+.nav_dropdown_content.w--open {
+  grid-template-rows: 1fr;
+}
+
+/* Animation des liens quand le dropdown est ouvert */
+.nav_dropdown_content.w--open .nav_dropdown_link {
+  opacity: 1;
+  transform: translateY(0);
+}
+
