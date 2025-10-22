@@ -83,6 +83,7 @@
     transition: none !important; /* Reset des transitions */
     transition-delay: 0s !important; /* Reset du delay */
   }
+  }
 
   /* ========================================
      ANIMATION BURGER MENU → CROIX
