@@ -25,8 +25,14 @@
     EASE: 'power2.out',   // Courbe d'easing GSAP
     START: 'top 80%',     // Position de déclenchement ScrollTrigger
   };
+  const COUNTER_CONFIG = {
+    DURATION: 2000,       // Durée de l'animation des compteurs (ms)
+    TRIGGER_OFFSET: 100   // Décalage pour le déclenchement (px)
+  };
 
   const scrollAnimations = [];
+  const counterElements = new Set();
+  const counterListeners = [];
 
   // ========================================
   // FONCTIONS UTILITAIRES
@@ -52,12 +58,102 @@
   }
 
   /**
+   * Formate un nombre avec des suffixes (K, M, etc.)
+   * @param {number} value - Valeur à formater
+   * @returns {string}
+   */
+  function formatNumber(value) {
+    if (value >= 1000000) {
+      return (value / 1000000).toFixed(1) + 'M';
+    }
+    if (value >= 1000) {
+      return (value / 1000).toFixed(0) + 'K';
+    }
+    return value.toString();
+  }
+
+  /**
    * Anime un élément vers son état final
    * @param {Element} element - L'élément à animer
    */
   function animateElement(element) {
     element.style.opacity = '1';
     element.style.transform = 'translateY(0)';
+  }
+
+  /**
+   * Vérifie si un élément est dans le viewport avec offset
+   * @param {Element} element
+   * @param {number} offset
+   * @returns {boolean}
+   */
+  function isInViewport(element, offset) {
+    const rect = element.getBoundingClientRect();
+    return rect.top <= window.innerHeight - offset && rect.bottom >= offset;
+  }
+
+  /**
+   * Anime un compteur numérique
+   * @param {Element} element - L'élément compteur
+   */
+  function runCounterAnimation(element) {
+    const finalValue =
+      parseInt(element.getAttribute('data-counter-value')) ||
+      parseInt(element.textContent.replace(/[^\d]/g, ''));
+
+    if (!finalValue) return;
+
+    const startTime = performance.now();
+    const startValue = 0;
+    const duration =
+      parseInt(element.getAttribute('data-counter-duration')) || COUNTER_CONFIG.DURATION;
+    const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
+
+    const tick = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeOutQuart(progress);
+      const currentValue = Math.floor(startValue + (finalValue - startValue) * eased);
+
+      element.textContent = formatNumber(currentValue);
+
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        element.textContent = formatNumber(finalValue);
+      }
+    };
+
+    requestAnimationFrame(tick);
+  }
+
+  /**
+   * Vérifie et anime les compteurs visibles
+   */
+  function checkAndAnimateCounters() {
+    counterElements.forEach((counter) => {
+      if (
+        !counter.classList.contains('counter-animated') &&
+        isInViewport(counter, COUNTER_CONFIG.TRIGGER_OFFSET)
+      ) {
+        counter.classList.add('counter-animated');
+        runCounterAnimation(counter);
+      }
+    });
+  }
+
+  /**
+   * Réinitialise les compteurs vers leur état d'origine
+   */
+  function resetCounterState() {
+    counterElements.forEach(counter => {
+      const original = counter.getAttribute('data-counter-original');
+      if (original !== null) {
+        counter.textContent = original;
+      }
+      counter.classList.remove('counter-animated');
+    });
+    counterElements.clear();
   }
 
   /**
@@ -99,6 +195,8 @@
       el.style.transform = '';
       el.style.transition = '';
     });
+
+    resetCounterState();
 
     document.body.classList.remove('navbar-animation-ready');
   }
@@ -194,6 +292,58 @@
     }
   }
 
+  /**
+   * Prépare les éléments compteurs pour l'animation
+   */
+  function bindCounters() {
+    const counters = document.querySelectorAll('[data-counter]');
+
+    counters.forEach(counter => {
+      if (!counter.hasAttribute('data-counter-original')) {
+        counter.setAttribute('data-counter-original', counter.textContent);
+      }
+      counterElements.add(counter);
+    });
+  }
+
+  /**
+   * Initialise les animations de compteurs
+   */
+  function initCounterAnimations() {
+    if (counterElements.size === 0) return;
+
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (ticking) return;
+
+      requestAnimationFrame(() => {
+        checkAndAnimateCounters();
+        ticking = false;
+      });
+
+      ticking = true;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
+
+    counterListeners.push(() => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    });
+
+    checkAndAnimateCounters();
+  }
+
+  /**
+   * Retire les écouteurs liés aux compteurs
+   */
+  function removeCounterListeners() {
+    counterListeners.forEach(dispose => dispose());
+    counterListeners.length = 0;
+  }
+
   // ========================================
   // INITIALISATION
   // ========================================
@@ -233,14 +383,15 @@
   /**
    * Initialise toutes les animations desktop
    */
-  function initDesktopAnimations() {
-    if (!isDesktop()) {
-      resetInlineStyles();
-      resetScrollAnimations();
-      return;
-    }
-
+  function initHomepageAnimations() {
+    removeCounterListeners();
+    resetInlineStyles();
     resetScrollAnimations();
+    bindCounters();
+    initCounterAnimations();
+
+    if (!isDesktop()) return;
+
     initNavbarAnimation();
     initScrollAnimations();
   }
@@ -251,10 +402,10 @@
 
   // Vérifier que le DOM est prêt
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initDesktopAnimations);
+    document.addEventListener('DOMContentLoaded', initHomepageAnimations);
   } else {
     // DOM déjà chargé
-    initDesktopAnimations();
+    initHomepageAnimations();
   }
 
   // ========================================
@@ -264,31 +415,73 @@
   // Exposer une fonction pour relancer l'animation si nécessaire
   window.homepageAnimations = {
     /**
-     * Relance l'animation de la navbar
+     * Relance toutes les animations desktop
      */
-    restart: function() {
+    restart() {
+      removeCounterListeners();
       resetInlineStyles();
       resetScrollAnimations();
-      initDesktopAnimations();
+      initHomepageAnimations();
     },
-    
+
+    /**
+     * Relance seulement les compteurs
+     */
+    restartCounters() {
+      removeCounterListeners();
+      resetCounterState();
+      bindCounters();
+      initCounterAnimations();
+    },
+
+    /**
+     * Anime un compteur manuellement
+     * @param {string|Element} selector - Sélecteur ou élément cible
+     */
+    animateCounter(selector) {
+      const element =
+        typeof selector === 'string' ? document.querySelector(selector) : selector;
+
+      if (!element || !element.hasAttribute('data-counter')) return;
+
+      if (!element.hasAttribute('data-counter-original')) {
+        element.setAttribute('data-counter-original', element.textContent);
+      }
+
+      counterElements.add(element);
+      element.classList.remove('counter-animated');
+      runCounterAnimation(element);
+    },
+
     /**
      * Obtient la configuration actuelle
-     * @returns {Object} Configuration
+     * @returns {Object} Configurations combinées
      */
-    getConfig: function() {
-      return { ...CONFIG };
-    }
+    getConfig() {
+      return {
+        navbar: { ...CONFIG },
+        scroll: { ...SCROLL_CONFIG },
+        counter: { ...COUNTER_CONFIG },
+      };
+    },
+  };
+
+  // Compatibilité avec l'ancien namespace counterAnimation
+  window.counterAnimation = {
+    restart() {
+      window.homepageAnimations.restartCounters();
+    },
+    animateCounter(selector) {
+      window.homepageAnimations.animateCounter(selector);
+    },
+    getConfig() {
+      return { ...COUNTER_CONFIG };
+    },
   };
 
   // Réagir aux changements de viewport (resize)
-  const handleMediaChange = event => {
-    if (event.matches) {
-      initDesktopAnimations();
-    } else {
-      resetInlineStyles();
-      resetScrollAnimations();
-    }
+  const handleMediaChange = () => {
+    initHomepageAnimations();
   };
 
   if (typeof desktopMedia.addEventListener === 'function') {
