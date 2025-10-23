@@ -1,34 +1,3 @@
-/**
- * 🎯 ANIMATION NAVBAR - STAGGERED ENTRANCE
- * 
- * Script pour gérer l'animation d'entrée progressive des éléments de navigation
- * avec un effet de slide depuis le bas et un délai échelonné entre les éléments.
- * 
- * Usage: Inclure ce script dans votre page HTML
- * 
- * IMPORTANT: Ajoutez ce CSS dans Webflow → Custom Code → Head Code AVANT le script :
- * 
- * <style>
- * /* Masquer par défaut, mais visible dans le mode designer */
- * [data-navbar="main"] { 
- *   opacity: 0; 
- * }
- * [data-navbar-animate] { 
- *   opacity: 0; 
- *   transform: translateY(20px); 
- * }
- * 
- * /* Révéler dans le mode designer */
- * body.wf-design-mode [data-navbar="main"] { 
- *   opacity: 1; 
- * }
- * body.wf-design-mode [data-navbar-animate] { 
- *   opacity: 1; 
- *   transform: translateY(0); 
- * }
- * </style>
- */
-
 (function() {
   'use strict';
 
