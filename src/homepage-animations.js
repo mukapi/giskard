@@ -13,14 +13,14 @@
 
   // Configuration des timings
   const CONFIG = {
-    NAVBAR_FADE_DURATION: 300,  // Durée du fade-in de la navbar (ms)
-    STAGGER_DELAY: 80,          // Délai entre chaque élément (ms)
+    NAVBAR_FADE_DURATION: 200,  // Durée du fade-in de la navbar (ms)
+    STAGGER_DELAY: 40,          // Délai entre chaque élément (ms)
     SLIDE_DISTANCE: 20,         // Distance du slide from bottom (px)
-    ELEMENT_DURATION: 400,      // Durée de l'animation des éléments (ms)
-    INITIAL_DELAY: 200          // Délai avant de lancer l'animation (ms)
+    ELEMENT_DURATION: 300,      // Durée de l'animation des éléments (ms)
+    INITIAL_DELAY: 0            // Délai avant de lancer l'animation (ms)
   };
   const SCROLL_CONFIG = {
-    OFFSET: 32,           // Décalage vertical initial (px)
+    OFFSET: 60,           // Décalage vertical initial (px)
     DURATION: 0.8,        // Durée de l'animation GSAP (s)
     EASE: 'power2.out',   // Courbe d'easing GSAP
     START: 'top 80%',     // Position de déclenchement ScrollTrigger
@@ -224,7 +224,7 @@
       allElements.forEach((el, index) => {
         setTimeout(() => {
           animateElement(el);
-        }, CONFIG.NAVBAR_FADE_DURATION + index * CONFIG.STAGGER_DELAY);
+        }, CONFIG.NAVBAR_FADE_DURATION / 2 + index * CONFIG.STAGGER_DELAY);
       });
     };
 
