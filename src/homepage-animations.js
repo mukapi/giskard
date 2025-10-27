@@ -13,10 +13,10 @@
 
   // Configuration des timings
   const CONFIG = {
-    NAVBAR_FADE_DURATION: 200,  // Durée du fade-in de la navbar (ms)
-    STAGGER_DELAY: 40,          // Délai entre chaque élément (ms)
-    SLIDE_DISTANCE: 20,         // Distance du slide from bottom (px)
-    ELEMENT_DURATION: 300,      // Durée de l'animation des éléments (ms)
+    NAVBAR_FADE_DURATION: 150,  // Durée du fade-in de la navbar (ms) - réduit de 200 à 150
+    STAGGER_DELAY: 25,          // Délai entre chaque élément (ms) - réduit de 40 à 25
+    SLIDE_DISTANCE: 15,         // Distance du slide from bottom (px) - réduit de 20 à 15
+    ELEMENT_DURATION: 250,      // Durée de l'animation des éléments (ms) - réduit de 300 à 250
     INITIAL_DELAY: 0            // Délai avant de lancer l'animation (ms)
   };
   const SCROLL_CONFIG = {
