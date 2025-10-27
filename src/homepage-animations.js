@@ -62,14 +62,75 @@
    * @param {number} value - Valeur à formater
    * @returns {string}
    */
-  function formatNumber(value) {
+  function formatNumber(value, decimals = 0) {
     if (value >= 1000000) {
       return (value / 1000000).toFixed(1) + 'M';
     }
     if (value >= 1000) {
       return (value / 1000).toFixed(0) + 'K';
     }
-    return value.toString();
+    if (decimals > 0) {
+      return value.toFixed(decimals);
+    }
+    return Math.round(value).toString();
+  }
+
+  /**
+   * Extrait une valeur numérique depuis une chaîne
+   * @param {string|null} source
+   * @returns {number}
+   */
+  function extractNumericValue(source) {
+    if (typeof source !== 'string') return NaN;
+
+    const normalized = source.replace(/\s/g, '').replace(/,/g, '.');
+    const match = normalized.match(/-?\d+(?:\.\d+)?/);
+
+    return match ? parseFloat(match[0]) : NaN;
+  }
+
+  /**
+   * Récupère la valeur finale du compteur
+   * @param {Element} element
+   * @returns {number|null}
+   */
+  function getCounterTargetValue(element) {
+    const fromAttribute = extractNumericValue(element.getAttribute('data-counter-value'));
+    if (Number.isFinite(fromAttribute)) {
+      return fromAttribute;
+    }
+
+    const fromText = extractNumericValue(element.textContent);
+    return Number.isFinite(fromText) ? fromText : null;
+  }
+
+  /**
+   * Détermine le nombre de décimales à afficher
+   * @param {Element} element
+   * @param {number|null} value
+   * @returns {number}
+   */
+  function getCounterDecimals(element, value) {
+    const decimalsAttr = element.getAttribute('data-counter-decimals');
+    if (decimalsAttr !== null) {
+      const parsed = parseInt(decimalsAttr, 10);
+      return !Number.isNaN(parsed) && parsed >= 0 ? parsed : 0;
+    }
+
+    const source = element.getAttribute('data-counter-value') || element.textContent;
+    if (typeof source === 'string') {
+      const match = source.match(/[.,](\d+)/);
+      if (match && match[1]) {
+        return match[1].length;
+      }
+    }
+
+    if (Number.isFinite(value)) {
+      const [, decimalPart] = value.toString().split('.');
+      return decimalPart ? decimalPart.length : 0;
+    }
+
+    return 0;
   }
 
   /**
@@ -97,30 +158,32 @@
    * @param {Element} element - L'élément compteur
    */
   function runCounterAnimation(element) {
-    const finalValue =
-      parseInt(element.getAttribute('data-counter-value')) ||
-      parseInt(element.textContent.replace(/[^\d]/g, ''));
+    const finalValue = getCounterTargetValue(element);
+    if (!Number.isFinite(finalValue)) return;
 
-    if (!finalValue) return;
+    const decimals = getCounterDecimals(element, finalValue);
 
     const startTime = performance.now();
     const startValue = 0;
     const duration =
       parseInt(element.getAttribute('data-counter-duration')) || COUNTER_CONFIG.DURATION;
     const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
+    const delta = finalValue - startValue;
 
     const tick = (currentTime) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const eased = easeOutQuart(progress);
-      const currentValue = Math.floor(startValue + (finalValue - startValue) * eased);
+      const rawValue = startValue + delta * eased;
+      const currentValue =
+        decimals > 0 ? Number(rawValue.toFixed(decimals)) : Math.floor(rawValue);
 
-      element.textContent = formatNumber(currentValue);
+      element.textContent = formatNumber(currentValue, decimals);
 
       if (progress < 1) {
         requestAnimationFrame(tick);
       } else {
-        element.textContent = formatNumber(finalValue);
+        element.textContent = formatNumber(finalValue, decimals);
       }
     };
 
