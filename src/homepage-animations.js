@@ -65,22 +65,38 @@
     if (!elementExists(navbar)) return;
 
     const announcementBar = document.querySelector(".announcement-bar");
-    const navWrap = navbar.closest(".nav-wrap");
+    const navWrap = navbar.closest(".nav_wrap");
 
-    if (!navWrap) return;
+    // Si nav_wrap existe avec flexbox gap, laisser CSS gérer le positionnement
+    // Le gap du flexbox créera automatiquement l'espace entre l'annonce et la navbar
+    if (navWrap) {
+      const navWrapStyles = window.getComputedStyle(navWrap);
+      if (
+        navWrapStyles.display === "flex" &&
+        navWrapStyles.gap !== "normal" &&
+        navWrapStyles.gap !== "0px"
+      ) {
+        // Le flexbox gap gère déjà l'espacement, nettoyer seulement les styles inline qui pourraient interférer
+        // Ne pas modifier position car il pourrait être défini par CSS pour d'autres raisons
+        navbar.style.top = "";
+        navbar.style.marginTop = "";
+        return;
+      }
+    }
+
+    // Sinon, utiliser le positionnement absolu comme avant (fallback)
+    let topOffset = 0;
 
     if (announcementBar && announcementBar.offsetParent !== null) {
-      // L'annonce est visible, la navbar sera positionnée naturellement par le flexbox gap
-      // Reset any absolute positioning to let flexbox handle the layout
-      navbar.style.position = "";
-      navbar.style.top = "";
-      navbar.style.marginTop = "";
-    } else {
-      // L'annonce n'est pas visible, s'assurer que la navbar est en position normale
-      navbar.style.position = "";
-      navbar.style.top = "";
-      navbar.style.marginTop = "";
+      // L'annonce est visible, positionner la navbar en dessous
+      const announcementRect = announcementBar.getBoundingClientRect();
+      topOffset = announcementRect.height;
     }
+
+    // Use absolute positioning as fallback when flexbox gap is not available
+    navbar.style.position = "absolute";
+    navbar.style.top = `${topOffset}px`;
+    navbar.style.marginTop = "";
   }
 
   /**
