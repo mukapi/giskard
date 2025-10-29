@@ -65,19 +65,22 @@
     if (!elementExists(navbar)) return;
 
     const announcementBar = document.querySelector(".announcement-bar");
-    let topOffset = 0;
+    const navWrap = navbar.closest(".nav-wrap");
+
+    if (!navWrap) return;
 
     if (announcementBar && announcementBar.offsetParent !== null) {
-      // L'annonce est visible, positionner la navbar en dessous
-      // Position the navbar exactly at the end of the announcement bar
-      const announcementRect = announcementBar.getBoundingClientRect();
-      topOffset = announcementRect.height;
+      // L'annonce est visible, la navbar sera positionnée naturellement par le flexbox gap
+      // Reset any absolute positioning to let flexbox handle the layout
+      navbar.style.position = "";
+      navbar.style.top = "";
+      navbar.style.marginTop = "";
+    } else {
+      // L'annonce n'est pas visible, s'assurer que la navbar est en position normale
+      navbar.style.position = "";
+      navbar.style.top = "";
+      navbar.style.marginTop = "";
     }
-
-    // Use absolute positioning to avoid gaps with relative positioning
-    navbar.style.position = "absolute";
-    navbar.style.top = `${topOffset}px`;
-    navbar.style.marginTop = ""; // Clear any existing margin-top value
   }
 
   /**
@@ -285,6 +288,7 @@
       navbar.style.transition = "";
       navbar.style.marginTop = "";
       navbar.style.top = "";
+      navbar.style.position = "";
     }
 
     elementsToAnimate.forEach((el) => {
