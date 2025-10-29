@@ -69,16 +69,15 @@
 
     if (announcementBar && announcementBar.offsetParent !== null) {
       // L'annonce est visible, positionner la navbar en dessous
-      // Account for both height and margin-bottom of the announcement bar
+      // Position the navbar exactly at the end of the announcement bar
       const announcementRect = announcementBar.getBoundingClientRect();
-      const announcementStyles = window.getComputedStyle(announcementBar);
-      const marginBottom = parseFloat(announcementStyles.marginBottom) || 0;
-      topOffset = announcementRect.height + marginBottom;
+      topOffset = announcementRect.height;
     }
 
-    // Use margin-top instead of top to avoid creating gaps with relative positioning
-    navbar.style.marginTop = `${topOffset}px`;
-    navbar.style.top = ""; // Clear any existing top value
+    // Use absolute positioning to avoid gaps with relative positioning
+    navbar.style.position = "absolute";
+    navbar.style.top = `${topOffset}px`;
+    navbar.style.marginTop = ""; // Clear any existing margin-top value
   }
 
   /**
