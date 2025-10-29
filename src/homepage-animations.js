@@ -433,7 +433,10 @@
    * Initialise l'animation de la navbar
    */
   function initNavbarAnimation() {
-    // Étape 1 : Masquer la navbar au chargement
+    // Étape 1 : Positionner la navbar dynamiquement
+    positionNavbarDynamically(navbar);
+    
+    // Étape 2 : Masquer la navbar au chargement
     if (elementExists(navbar)) {
       navbar.style.opacity = '0';
       navbar.style.transition = `opacity ${CONFIG.NAVBAR_FADE_DURATION}ms ease-out`;
@@ -565,10 +568,20 @@
     initHomepageAnimations();
   };
 
+  // Réagir aux changements de taille de l'annonce
+  const handleResize = () => {
+    if (isDesktop() && elementExists(navbar)) {
+      positionNavbarDynamically(navbar);
+    }
+  };
+
   if (typeof desktopMedia.addEventListener === 'function') {
     desktopMedia.addEventListener('change', handleMediaChange);
   } else if (typeof desktopMedia.addListener === 'function') {
     desktopMedia.addListener(handleMediaChange);
   }
+
+  // Écouter les changements de taille pour repositionner la navbar
+  window.addEventListener('resize', handleResize, { passive: true });
 
 })();
