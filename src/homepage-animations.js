@@ -69,7 +69,11 @@
 
     if (announcementBar && announcementBar.offsetParent !== null) {
       // L'annonce est visible, positionner la navbar en dessous
-      topOffset = announcementBar.getBoundingClientRect().height;
+      // Account for both height and margin-bottom of the announcement bar
+      const announcementRect = announcementBar.getBoundingClientRect();
+      const announcementStyles = window.getComputedStyle(announcementBar);
+      const marginBottom = parseFloat(announcementStyles.marginBottom) || 0;
+      topOffset = announcementRect.height + marginBottom;
     }
 
     // Use margin-top instead of top to avoid creating gaps with relative positioning
