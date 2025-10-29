@@ -1,0 +1,27 @@
+
+[data-navbar="main"],
+[data-navbar-animate] {
+  opacity: 0;
+  /* Transform will be handled by JavaScript based on announcement bar presence */
+}
+
+@media (max-width: 991px) {
+  [data-navbar="main"],
+  [data-navbar-animate] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+html.wf-design-mode [data-navbar="main"],
+html.wf-design-mode [data-navbar-animate],
+html.w-editor [data-navbar="main"],
+html.w-editor [data-navbar-animate] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+[data-scroll-animate] { opacity: 0; transform: translateY(32px); }
+@media (max-width: 991px) { [data-scroll-animate] { opacity: 1; transform: none; } }
+html.wf-design-mode [data-scroll-animate],
+html.w-editor [data-scroll-animate] { opacity: 1 !important; transform: none !important; }

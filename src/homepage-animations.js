@@ -58,6 +58,24 @@
   }
 
   /**
+   * Positionne la navbar dynamiquement en fonction de la présence de l'annonce
+   * @param {Element} navbar - L'élément navbar
+   */
+  function positionNavbarDynamically(navbar) {
+    if (!elementExists(navbar)) return;
+
+    const announcementBar = document.querySelector('.announcement-bar');
+    let topOffset = 0;
+
+    if (announcementBar && announcementBar.offsetParent !== null) {
+      // L'annonce est visible, positionner la navbar en dessous
+      topOffset = announcementBar.getBoundingClientRect().height;
+    }
+
+    navbar.style.top = `${topOffset}px`;
+  }
+
+  /**
    * Formate un nombre avec des suffixes (K, M, etc.)
    * @param {number} value - Valeur à formater
    * @returns {string}
