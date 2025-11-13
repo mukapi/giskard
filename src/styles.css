@@ -1,37 +1,17 @@
-[data-navbar="main"],
-[data-navbar-animate] {
-  opacity: 0;
-  /* Transform will be handled by JavaScript based on announcement bar presence */
-}
-
-@media (max-width: 991px) {
-  [data-navbar="main"],
-  [data-navbar-animate] {
-    opacity: 1 !important;
-    transform: none !important;
+/* Fix mobile overflow */
+@media (max-width: 767px) {
+  /* Empêcher TOUS les parents de s'étirer */
+  .template_blog-wrapper_content,
+  .text-rich-text,
+  .text-rich-text .w-embed {
+    max-width: 100% !important;
+    min-width: 0 !important;
   }
-}
 
-html.wf-design-mode [data-navbar="main"],
-html.wf-design-mode [data-navbar-animate],
-html.w-editor [data-navbar="main"],
-html.w-editor [data-navbar-animate] {
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-[data-scroll-animate] {
-  opacity: 0;
-  transform: translateY(32px);
-}
-@media (max-width: 991px) {
-  [data-scroll-animate] {
-    opacity: 1;
-    transform: none;
+  /* Le wrapper du tableau scrolle */
+  .table-wrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100% !important;
   }
-}
-html.wf-design-mode [data-scroll-animate],
-html.w-editor [data-scroll-animate] {
-  opacity: 1 !important;
-  transform: none !important;
 }

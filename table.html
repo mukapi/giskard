@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .table-wrapper {
+        overflow-x: auto;
+      }
+      table {
+        width: auto;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+      th {
+        padding: 16px;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid #e9ecef;
+        color: #40dedf;
+        position: sticky;
+        top: 0;
+      }
+      td {
+        padding: 14px 16px;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: top;
+      }
+      .attack-type-cell {
+        font-weight: 600;
+        color: #40dedf;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Attack Type</th>
+            <th>Structure</th>
+            <th>Typical Techniques</th>
+            <th>Effectiveness vs. Defenses</th>
+            <th>Main Challenges for Defenders</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="attack-type-cell">Single-turn</td>
+            <td>One-off prompt</td>
+            <td>Persona hacks, encoding, priming</td>
+            <td>Low against strong guardrails</td>
+            <td>Detect and filter malicious input promptly</td>
+          </tr>
+          <tr>
+            <td class="attack-type-cell">Multi-turn</td>
+            <td>Multi-prompt dialogue</td>
+            <td>Crescendo, Skeleton Key, escalation, scenario building</td>
+            <td>High against advanced models</td>
+            <td>
+              Requires context-aware analysis; benign steps may hide intent
+            </td>
+          </tr>
+          <tr>
+            <td class="attack-type-cell">Dynamic Agentic</td>
+            <td>Adaptive multi-dialog, agent-driven</td>
+            <td>GOAT, Chain-of-Attack-Thought, RL-based adaptive stacking</td>
+            <td>Highest; >90% against top models</td>
+            <td>
+              Detecting evolving strategies, resource-intensive tracking and
+              defense
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
