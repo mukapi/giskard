@@ -64,7 +64,6 @@
   function positionNavbarDynamically(navbar) {
     if (!elementExists(navbar)) return;
 
-    const announcementBar = document.querySelector(".announcement-bar");
     const navWrap = navbar.closest(".nav_wrap");
 
     // Si nav_wrap existe avec flexbox gap, laisser CSS gérer le positionnement
@@ -83,20 +82,6 @@
         return;
       }
     }
-
-    // Sinon, utiliser le positionnement absolu comme avant (fallback)
-    let topOffset = 0;
-
-    if (announcementBar && announcementBar.offsetParent !== null) {
-      // L'annonce est visible, positionner la navbar en dessous
-      const announcementRect = announcementBar.getBoundingClientRect();
-      topOffset = announcementRect.height;
-    }
-
-    // Use absolute positioning as fallback when flexbox gap is not available
-    navbar.style.position = "absolute";
-    navbar.style.top = `${topOffset}px`;
-    navbar.style.marginTop = "";
   }
 
   /**
