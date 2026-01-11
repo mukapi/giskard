@@ -313,6 +313,8 @@
 
   /**
    * Démarre la séquence d'animation après chargement
+   * Optimisé pour le LCP : déclenche immédiatement après le premier paint
+   * au lieu d'attendre le load event (qui attend tous les scripts tiers)
    * @param {Element[]} allElements
    */
   function startAnimation(allElements) {
@@ -334,11 +336,11 @@
       setTimeout(runSequence, CONFIG.INITIAL_DELAY);
     };
 
-    if (document.readyState === "complete") {
-      scheduleSequence();
-    } else {
-      window.addEventListener("load", scheduleSequence, { once: true });
-    }
+    // Optimisation LCP : déclencher après le premier paint via requestAnimationFrame
+    // au lieu d'attendre le load event (qui peut prendre 3-5s avec les scripts tiers)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(scheduleSequence);
+    });
   }
 
   /**
