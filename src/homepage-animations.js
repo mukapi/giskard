@@ -4,7 +4,7 @@
   // ========================================
   // CONFIGURATION
   // ========================================
-  const DESKTOP_MEDIA_QUERY = "(min-width: 992px)";
+  const DESKTOP_MEDIA_QUERY = "(min-width: 768px)";
   const desktopMedia = window.matchMedia(DESKTOP_MEDIA_QUERY);
 
   // Sélecteurs basés sur les attributs data
@@ -312,38 +312,6 @@
   }
 
   /**
-   * Démarre la séquence d'animation après chargement
-   * Optimisé pour le LCP : déclenche immédiatement après le premier paint
-   * au lieu d'attendre le load event (qui attend tous les scripts tiers)
-   * @param {Element[]} allElements
-   */
-  function startAnimation(allElements) {
-    const runSequence = () => {
-      document.body.classList.add("navbar-animation-ready");
-
-      if (elementExists(navbar)) {
-        navbar.style.opacity = "1";
-      }
-
-      allElements.forEach((el, index) => {
-        setTimeout(() => {
-          animateElement(el);
-        }, CONFIG.NAVBAR_FADE_DURATION / 2 + index * CONFIG.STAGGER_DELAY);
-      });
-    };
-
-    const scheduleSequence = () => {
-      setTimeout(runSequence, CONFIG.INITIAL_DELAY);
-    };
-
-    // Optimisation LCP : déclencher après le premier paint via requestAnimationFrame
-    // au lieu d'attendre le load event (qui peut prendre 3-5s avec les scripts tiers)
-    requestAnimationFrame(() => {
-      requestAnimationFrame(scheduleSequence);
-    });
-  }
-
-  /**
    * Initialise les animations au scroll via GSAP / ScrollTrigger
    */
   function initScrollAnimations() {
@@ -464,19 +432,12 @@
 
   /**
    * Initialise l'animation de la navbar
+   * Optimisation LCP : attend le premier paint avant de masquer les éléments
+   * Cela permet au navigateur de capturer le LCP avant que l'animation commence
    */
   function initNavbarAnimation() {
     // Étape 1 : Positionner la navbar dynamiquement
     positionNavbarDynamically(navbar);
-
-    // Étape 2 : Masquer la navbar au chargement
-    if (elementExists(navbar)) {
-      navbar.style.opacity = "0";
-      navbar.style.transition = `opacity ${CONFIG.NAVBAR_FADE_DURATION}ms ease-out`;
-    }
-
-    // Étape 2 : Préparer les éléments internes (masqués + positionnés en bas)
-    const allElements = [];
 
     // Convertir NodeList en Array et trier par ordre d'apparition
     const elementsArray = Array.from(elementsToAnimate);
@@ -488,13 +449,45 @@
       return orderA - orderB;
     });
 
-    elementsArray.forEach((el) => {
-      applyInitialStyles(el);
-      allElements.push(el);
-    });
+    // Optimisation LCP : attendre le premier paint avant de masquer les éléments
+    // Double requestAnimationFrame garantit que le premier paint est passé
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // Étape 2 : Masquer la navbar APRÈS le premier paint
+        if (elementExists(navbar)) {
+          navbar.style.opacity = "0";
+          navbar.style.transition = `opacity ${CONFIG.NAVBAR_FADE_DURATION}ms ease-out`;
+        }
 
-    // Étape 3 : Lancer les animations au chargement
-    startAnimation(allElements);
+        // Étape 3 : Préparer les éléments internes (masqués + positionnés en bas)
+        const allElements = [];
+        elementsArray.forEach((el) => {
+          applyInitialStyles(el);
+          allElements.push(el);
+        });
+
+        // Étape 4 : Lancer les animations immédiatement après
+        runAnimationSequence(allElements);
+      });
+    });
+  }
+
+  /**
+   * Exécute la séquence d'animation (appelée après le premier paint)
+   * @param {Element[]} allElements
+   */
+  function runAnimationSequence(allElements) {
+    document.body.classList.add("navbar-animation-ready");
+
+    if (elementExists(navbar)) {
+      navbar.style.opacity = "1";
+    }
+
+    allElements.forEach((el, index) => {
+      setTimeout(() => {
+        animateElement(el);
+      }, CONFIG.NAVBAR_FADE_DURATION / 2 + index * CONFIG.STAGGER_DELAY);
+    });
   }
 
   /**

@@ -1,0 +1,89 @@
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<!-- Update the stargazer number -->
+<script>
+  const repoUrl = "https://api.github.com/repos/Giskard-AI/giskard";
+
+  const githubStarsElements = document.querySelectorAll("#github-stars");
+  githubStarsElements.forEach((element) => {
+    fetch(repoUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        const stars = data.stargazers_count;
+        element.innerText = stars.toLocaleString();
+      })
+      .catch((error) => console.error(error));
+  });
+</script>
+
+<!-- Stuff for the cookie banner -->
+<script>
+  // Find the link element with ID "cookies"
+  var cookiesLink = document.getElementById("cookies");
+
+  // Add the openAxeptioCookies() function to the link's href attribute
+  cookiesLink.href = "javascript:openAxeptioCookies()";
+</script>
+
+<!-- Typing banner (could be done with CSS)-->
+<!--
+<script>
+  const text =
+    "🇪🇺 EU AI Act: What It Means for GenAI Providers - Download Whitepaper 🗞️";
+  const typewriter = document.getElementById("typewriter");
+  let index = 0;
+
+  function type() {
+    if (index < text.length) {
+      typewriter.innerHTML =
+        text.slice(0, index) + '<span class="blinking-cursor">|</span>';
+      index++;
+      setTimeout(type, Math.random() * 100 + 25); // Reduced range of random delay and minimum delay
+    } else {
+      typewriter.innerHTML =
+        text.slice(0, index) + '<span class="blinking-cursor">|</span>';
+    }
+  }
+
+  // start typing
+  type();
+</script>
+-->
+
+<script>
+  // On attend que le DOM soit chargé
+  document.addEventListener("DOMContentLoaded", function () {
+    // On récupère la bannière et le bouton
+    var banner = document.querySelector(".banner_component");
+    var closeButton = document.querySelector(".banner_close-button");
+
+    // On vérifie si le cookie est défini
+    var cookieValue = document.cookie.replace(
+      /(?:(?:^|.*;\s*)bannerClosed\s*\=\s*([^;]*).*$)|^.*$/,
+      "$1"
+    );
+
+    if (cookieValue === "true") {
+      // Si le cookie est défini, on cache la bannière
+      banner.style.display = "none";
+    }
+
+    // On ajoute un écouteur d'événement au bouton de fermeture
+    if (closeButton) {
+      closeButton.addEventListener("click", function () {
+        // On cache la bannière
+        banner.style.display = "none";
+
+        // On crée un cookie qui expire dans 24 heures
+        var date = new Date();
+        date.setTime(date.getTime() + 24 * 60 * 60 * 1000);
+        var expires = "; expires=" + date.toUTCString();
+
+        // On définit le cookie
+        document.cookie = "bannerClosed=true" + expires + "; path=/";
+      });
+    }
+  });
+</script>
