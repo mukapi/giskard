@@ -1,0 +1,29 @@
+/* ===========================================
+   HubSpot Forms Custom Styles
+   =========================================== */
+
+/* -----------------------------------------
+   Newsletter Popup Form
+   Conteneur: .modal_newsletter_hubspot
+   ----------------------------------------- */
+
+.modal_newsletter_hubspot .hs-form {
+  flex-direction: column !important;
+  gap: 1.38rem !important;
+  align-items: stretch !important;
+  width: 100% !important;
+}
+
+.modal_newsletter_hubspot .hs_email,
+.modal_newsletter_hubspot .hs_submit,
+.modal_newsletter_hubspot .actions,
+.modal_newsletter_hubspot .hs-button {
+  width: 100% !important;
+}
+
+/* Messages d'erreur */
+.modal_newsletter_hubspot .hs-error-msgs {
+  margin-top: 0.5rem !important;
+  padding-left: 1.4rem !important;
+  text-align: left !important;
+}

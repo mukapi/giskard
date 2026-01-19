@@ -1,93 +1,93 @@
 <!-- [Attributes by Finsweet] Custom slider dots -->
 <script
-  defer
-  src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-sliderdots@1/sliderdots.js"
+    defer
+    src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-sliderdots@1/sliderdots.js"
 ></script>
 
 <!-- [Attributes by Finsweet] Copy to clipboard -->
 <script
-  defer
-  src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-copyclip@1/copyclip.js"
+    defer
+    src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-copyclip@1/copyclip.js"
 ></script>
 
 <style>
-  .w-slider-nav.w-round > div {
-    border-radius: 0%;
-  }
-
-  @media only screen and (min-width: 991px) and (max-width: 1280px) {
-    .nav_menu {
-      grid-column-gap: 0.75rem;
+    .w-slider-nav.w-round > div {
+        border-radius: 0%;
     }
 
-    .nav_link {
-      font-size: 0.9rem;
+    @media only screen and (min-width: 991px) and (max-width: 1280px) {
+        .nav_menu {
+            grid-column-gap: 0.75rem;
+        }
+
+        .nav_link {
+            font-size: 0.9rem;
+        }
+
+        .nav_menu_list {
+            gap: 0px;
+        }
+
+        .github_widget {
+            display: none;
+        }
     }
 
-    .nav_menu_list {
-      gap: 0px;
-    }
+    /*Hero marquee*/
 
-    .github_widget {
-      display: none;
+    .partners-marquee {
+        overflow: hidden;
+        white-space: nowrap;
+        mask-image: linear-gradient(
+            to right,
+            transparent 0%,
+            black 10%,
+            black 90%,
+            transparent 100%
+        );
+        -webkit-mask-image: linear-gradient(
+            to right,
+            transparent 0%,
+            black 10%,
+            black 90%,
+            transparent 100%
+        );
     }
-  }
-
-  /*Hero marquee*/
-
-  .partners-marquee {
-    overflow: hidden;
-    white-space: nowrap;
-    mask-image: linear-gradient(
-      to right,
-      transparent 0%,
-      black 10%,
-      black 90%,
-      transparent 100%
-    );
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent 0%,
-      black 10%,
-      black 90%,
-      transparent 100%
-    );
-  }
-  .partner-track-1,
-  .partner-track-2 {
-    display: flex !important;
-    gap: 20px !important;
-    width: max-content !important;
-    animation: marquee 15s linear infinite !important;
-  }
-  @keyframes marquee {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
-  }
-  @media (max-width: 768px) {
     .partner-track-1,
     .partner-track-2 {
-      animation-duration: 15s !important;
+        display: flex !important;
+        gap: 20px !important;
+        width: max-content !important;
+        animation: marquee 15s linear infinite !important;
     }
-  }
+    @keyframes marquee {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+    @media (max-width: 768px) {
+        .partner-track-1,
+        .partner-track-2 {
+            animation-duration: 15s !important;
+        }
+    }
 
-  .dashboard-lottie-animation svg {
-    margin-bottom: -10px;
-  }
+    .dashboard-lottie-animation svg {
+        margin-bottom: -10px;
+    }
 </style>
 
 <!-- [Attributes by Finsweet] CMS Slider -->
 <script
-  async
-  src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsslider@1/cmsslider.js"
+    async
+    src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsslider@1/cmsslider.js"
 ></script>
 
 <!-- [Attributes by Finsweet] Accordion -->
 <script
-  defer
-  src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-accordion@1/accordion.js"
+    defer
+    src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-accordion@1/accordion.js"
 ></script>
